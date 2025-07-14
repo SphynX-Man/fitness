@@ -9,6 +9,9 @@ let watchId = null;
 let timerInterval = null;
 let speedHistory = [];
 
+let logicalCanvasWidth = 0;
+let logicalCanvasHeight = 0;
+
 // DOM Elements
 const canvas = document.getElementById('routeCanvas');
 const ctx = canvas.getContext('2d');
@@ -25,12 +28,18 @@ const toast = document.getElementById('toast');
 // Initialize Canvas
 function initCanvas() {
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
+    logicalCanvasWidth = rect.width;
+    logicalCanvasHeight = rect.height;
+
+    canvas.width = logicalCanvasWidth * window.devicePixelRatio;
+    canvas.height = logicalCanvasHeight * window.devicePixelRatio;
+
     ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    // canvas.style.width = rect.width + 'px';
-    // canvas.style.height = rect.height + 'px';
+
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    
     drawRoute(); // Redraw route if canvas size changes
 }
 
@@ -137,7 +146,7 @@ function drawRoute() {
     const currentBounds = { minLat, maxLat, minLon, maxLon };
 
     // Convert all route points to canvas coordinates with dynamic scaling
-    const canvasRoute = routePoints.map(p => latLonToCanvasXY(p.lat, p.lon, currentBounds, canvas.width, canvas.height));
+    const canvasRoute = routePoints.map(p => latLonToCanvasXY(p.lat, p.lon, currentBounds, logicalCanvasWidth, logicalCanvasHeight));
 
     // Draw the route line if there's more than one point
     if (canvasRoute.length > 1) {
@@ -275,9 +284,7 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
     
     // apply formulae
     let a = Math.pow(Math.sin(dLat / 2), 2) + 
-                Math.pow(Math.sin(dLon / 2), 2) * 
-                Math.cos(lat1) * 
-                Math.cos(lat2);
+                  Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
     let rad = 6371;
     let c = 2 * Math.asin(Math.sqrt(a));
     return rad * c;
