@@ -133,6 +133,25 @@ function handlePositionUpdate(position) {
     updateStats();
 }
 
+function handleError(error) {
+    let message = 'Unknown error occurred';
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            message = 'Permission denied for Geolocation';
+            break;
+        case error.POSITION_UNAVAILABLE:
+            message = 'Location information is unavailable';
+            break;
+        case error.TIMEOUT:
+            message = 'The request to get user location timed out';
+            break;
+        default:
+            message = 'An unknown error occurred while fetching location';
+    }
+    showToast(message);
+    stopTracking();
+}
+
 function haversineDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3;
     const φ1 = lat1 * Math.PI / 180;
