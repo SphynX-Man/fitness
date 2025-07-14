@@ -226,11 +226,13 @@ body {
     border-radius: 25px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     opacity: 0;
+    display: none;
     transition: all 0.3s ease;
     z-index: 1000;
 }
 
 .toast.show {
+    display: block;
     opacity: 1;
     transform: translateX(-50%) translateY(-10px);
 }
